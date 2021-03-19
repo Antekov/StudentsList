@@ -60,8 +60,9 @@
             this.btPrevRecord = new System.Windows.Forms.Button();
             this.btNextRecord = new System.Windows.Forms.Button();
             this.btLastRecord = new System.Windows.Forms.Button();
-            this.studentBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btCreateRecord = new System.Windows.Forms.Button();
+            this.studentBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.btDeduct = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgwStudents)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.studentBindingSource)).BeginInit();
@@ -263,7 +264,7 @@
             this.dgwStudents.Size = new System.Drawing.Size(940, 150);
             this.dgwStudents.TabIndex = 11;
             this.dgwStudents.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgwStudents_CellValueChanged);
-            this.dgwStudents.CurrentCellChanged += new System.EventHandler(this.dgwStudents_CurrentCellChanged);
+            this.dgwStudents.SelectionChanged += new System.EventHandler(this.dgwStudents_SelectionChanged);
             // 
             // FullName
             // 
@@ -343,10 +344,6 @@
             this.btLastRecord.UseVisualStyleBackColor = true;
             this.btLastRecord.Click += new System.EventHandler(this.btLastRecord_Click);
             // 
-            // studentBindingSource
-            // 
-            this.studentBindingSource.DataSource = typeof(StudentsList.Student);
-            // 
             // btCreateRecord
             // 
             this.btCreateRecord.Location = new System.Drawing.Point(864, 317);
@@ -357,11 +354,26 @@
             this.btCreateRecord.UseVisualStyleBackColor = true;
             this.btCreateRecord.Click += new System.EventHandler(this.btCreateRecord_Click);
             // 
+            // studentBindingSource
+            // 
+            this.studentBindingSource.DataSource = typeof(StudentsList.Student);
+            // 
+            // btDeduct
+            // 
+            this.btDeduct.Location = new System.Drawing.Point(963, 317);
+            this.btDeduct.Name = "btDeduct";
+            this.btDeduct.Size = new System.Drawing.Size(92, 33);
+            this.btDeduct.TabIndex = 18;
+            this.btDeduct.Text = "Отчислить";
+            this.btDeduct.UseVisualStyleBackColor = true;
+            this.btDeduct.Click += new System.EventHandler(this.btDeduct_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1067, 554);
+            this.Controls.Add(this.btDeduct);
             this.Controls.Add(this.btCreateRecord);
             this.Controls.Add(this.btLastRecord);
             this.Controls.Add(this.btNextRecord);
@@ -429,6 +441,7 @@
         private System.Windows.Forms.Button btNextRecord;
         private System.Windows.Forms.Button btLastRecord;
         private System.Windows.Forms.Button btCreateRecord;
+        private System.Windows.Forms.Button btDeduct;
     }
 }
 

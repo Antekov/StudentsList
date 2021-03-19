@@ -18,38 +18,55 @@ namespace StudentsList
             this.path = path;
         }
 
-        public void Save(ref StudentsContainer students)
+        public void Save(ref StudentsContainer students, ref StudentsContainer deductedStudents)
         {
-            saveTxt(ref students);
+            saveTxt(ref students, ref deductedStudents);
             //saveBin(students);
             //saveDat(students);
         }
 
-        private void saveTxt(ref StudentsContainer students)
+        private void saveTxt(ref StudentsContainer students, ref StudentsContainer deductedStudents)
         {
             FileStream fstream = new FileStream($"{path}.txt", FileMode.Create);
+            byte[] array;
             int offset = 0;
             int len = students.Count;
             int i = 0;
             foreach (Student student in students)
             {
                 i++;
-                string text = student.Name + ',' + student.Group + ',' + student.Subject + ',' + student.Mark;
+                string text = student.Name + ',' + student.Group + ',' + student.Subject + ',' + student.Mark + ',' + student.IsDeducted.ToString();
                 if (i < len) { text += Environment.NewLine; }
-                byte[] array = System.Text.Encoding.Default.GetBytes(text);
+                array = System.Text.Encoding.Default.GetBytes(text);
                 fstream.Write(array, 0, array.Length);
                 offset += array.Length;
+            }
+            if (deductedStudents.Count > 0)
+            {
+                array = System.Text.Encoding.Default.GetBytes(Environment.NewLine);
+                fstream.Write(array, 0, array.Length);
+
+                i = 0;
+                foreach (Student student in deductedStudents)
+                {
+                    i++;
+                    string text = student.Name + ',' + student.Group + ',' + student.Subject + ',' + student.Mark + ',' + student.IsDeducted.ToString();
+                    if (i < students.Count) { text += Environment.NewLine; }
+                    array = System.Text.Encoding.Default.GetBytes(text);
+                    fstream.Write(array, 0, array.Length);
+                    offset += array.Length;
+                }
             }
             fstream.Close();
         }
 
-        public void Load(ref StudentsContainer students)
+        public void Load(ref StudentsContainer students, ref StudentsContainer deductedStudents)
         {
             // чтение из файла
             try
             {
                 FileStream fstream = new FileStream($"{path}.txt", FileMode.Open);
-                loadTxt(fstream, ref students);
+                loadTxt(fstream, ref students, ref deductedStudents);
                 fstream.Close();
                 return;
             }
@@ -76,7 +93,7 @@ namespace StudentsList
             }
         }
 
-        private void loadTxt(FileStream fstream, ref StudentsContainer students)
+        private void loadTxt(FileStream fstream, ref StudentsContainer students, ref StudentsContainer deductedStudents)
         {
             // преобразуем строку в байты
             byte[] array = new byte[fstream.Length];
@@ -88,7 +105,15 @@ namespace StudentsList
             foreach (var line in textFromFile.Split('\n')) {
                 string s = line.Trim();
                 var parts = s.Split(',');
-                students.Add(new Student(parts[0], parts[1], parts[2], parts[3]));
+                var student = new Student(parts[0], parts[1], parts[2], parts[3], Boolean.Parse(parts[4]));
+
+                if (student.IsDeducted)
+                {
+                    deductedStudents.Add(student);
+                } else
+                {
+                    students.Add(student);
+                }
             }
         }
 

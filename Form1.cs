@@ -13,7 +13,7 @@ namespace StudentsList
 {
     public partial class Form1 : Form
     {
-        private StudentsContainer students;
+        private StudentsContainer students, deductedStudents;
         private FileContainer inFileContainer, outFileContainer;
         private int CurrentRowIndex = -1;
         private IniFile settingsFile = new IniFile("settings.ini");
@@ -108,8 +108,9 @@ namespace StudentsList
         private void LoadInputFile(string filename)
         {
             students = new StudentsContainer();
+            deductedStudents = new StudentsContainer();
             inFileContainer = new FileContainer(filename);
-            inFileContainer.Load(ref students);
+            inFileContainer.Load(ref students, ref deductedStudents);
 
             foreach (Student student in students)
             {
@@ -119,29 +120,12 @@ namespace StudentsList
         }
 
 
-
-        private void dgwStudents_CurrentCellChanged(object sender, EventArgs e)
-        {
-            if (!(outFileContainer is null) && dgwStudents.CurrentRow.Index != CurrentRowIndex)
-            {
-                if (IsEmptyRow(dgwStudents.CurrentRow))
-                {
-                    students.RemoveAt(dgwStudents.CurrentRow.Index);
-                    dgwStudents.Rows.Remove(dgwStudents.CurrentRow);
-                }
-
-                outFileContainer.Save(ref students);
-                // MessageBox.Show(dgwStudents.CurrentRow.Index.ToString());
-                CurrentRowIndex = dgwStudents.CurrentRow.Index; 
-            }
-        }
-
         private bool IsEmptyRow(DataGridViewRow Row)
         {
-            return (Row.Cells[0].Value == null || Row.Cells[0].Value.ToString() == "") 
-                && (Row.Cells[1].Value == null || Row.Cells[1].Value.ToString() == "")
-                && (Row.Cells[2].Value == null || Row.Cells[2].Value.ToString() == "")
-                && (Row.Cells[3].Value == null || Row.Cells[3].Value.ToString() == "");
+            return (Row.Cells[0].Value == null || Row.Cells[0].Value.ToString().Equals("")) 
+                && (Row.Cells[1].Value == null || Row.Cells[1].Value.ToString().Equals(""))
+                && (Row.Cells[2].Value == null || Row.Cells[2].Value.ToString().Equals(""))
+                && (Row.Cells[3].Value == null || Row.Cells[3].Value.ToString().Equals(""));
         }
 
         private void dgwStudents_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -208,6 +192,30 @@ namespace StudentsList
             dgwStudents.Rows.Add();
             CurrentRowIndex = dgwStudents.Rows.Count - 1;
             students.Add(new Student());
+        }
+
+        private void btDeduct_Click(object sender, EventArgs e)
+        {
+            ((Student) students[CurrentRowIndex]).IsDeducted = true;
+            deductedStudents.Add(students[CurrentRowIndex]);
+            students.RemoveAt(CurrentRowIndex);
+            dgwStudents.Rows.Remove(dgwStudents.Rows[CurrentRowIndex]);
+            outFileContainer.Save(ref students, ref deductedStudents);
+        }
+
+        private void dgwStudents_SelectionChanged(object sender, EventArgs e)
+        {
+            if (!(outFileContainer is null) && CurrentRowIndex != -1 && CurrentRowIndex < dgwStudents.Rows.Count && dgwStudents.CurrentRow.Index != CurrentRowIndex)
+            {
+                if (IsEmptyRow(dgwStudents.Rows[CurrentRowIndex]))
+                {
+                    students.RemoveAt(CurrentRowIndex);
+                    dgwStudents.Rows.Remove(dgwStudents.Rows[CurrentRowIndex]);
+                }
+
+                outFileContainer.Save(ref students, ref deductedStudents);
+            }
+            CurrentRowIndex = dgwStudents.CurrentRow.Index;
         }
 
         private void saveFileDialogOut_FileOk(object sender, CancelEventArgs e)

@@ -13,12 +13,15 @@ namespace StudentsList
         public String Subject { get; set; }
         public String Mark { get; set; }
 
-        public Student(string Name="", string Group="", string Subject="", string Mark="")
+        public Boolean IsDeducted { get; set; }
+
+        public Student(string Name="", string Group="", string Subject="", string Mark="", Boolean IsDeducted=false)
         {
             this.Name = Name;
             this.Group = Group;
             this.Subject = Subject;
             this.Mark = Mark;
+            this.IsDeducted = IsDeducted;
         }
 
     }
