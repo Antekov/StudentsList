@@ -74,7 +74,7 @@ namespace StudentsList
 
         private void showDeletedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            cbShowDeducted.Checked = !cbShowDeducted.Checked;
         }
 
         private void btInFileSelect_Click(object sender, EventArgs e)
@@ -102,7 +102,7 @@ namespace StudentsList
         {
             tbInFileName.Text = openFileDialogIn.FileName;
             LoadInputFile(tbInFileName.Text);
-            CurrentRowIndex = dgwStudents.CurrentRow.Index;
+            LoadStudentsInGrid();
         }
 
         private void LoadInputFile(string filename)
@@ -111,12 +111,36 @@ namespace StudentsList
             deductedStudents = new StudentsContainer();
             inFileContainer = new FileContainer(filename);
             inFileContainer.Load(ref students, ref deductedStudents);
+            LoadStudentsInGrid();
+        }
+
+        private void LoadStudentsInGrid()
+        {
+            dgwStudents.Rows.Clear();
 
             foreach (Student student in students)
             {
-                dgwStudents.Rows.Add(new string[] { student.Name, student.Group, student.Subject, student.Mark });
+                dgwStudents.Rows.Add(new string[] { student.Name, student.Group, student.Subject, student.Mark, ""});
             }
-           
+
+            if (CurrentRowIndex == -1 && students.Count > 0)
+            {
+                CurrentRowIndex = 0;
+            }
+
+            if (cbShowDeducted.Checked)
+            {
+                foreach (Student student in deductedStudents)
+                {
+                    dgwStudents.Rows.Add(new string[] { student.Name, student.Group, student.Subject, student.Mark, "Отчислен" });
+                }
+
+                if (CurrentRowIndex == -1 && deductedStudents.Count + students.Count > 0)
+                {
+                    CurrentRowIndex = 0;
+                }
+            }
+
         }
 
 
@@ -128,11 +152,26 @@ namespace StudentsList
                 && (Row.Cells[3].Value == null || Row.Cells[3].Value.ToString().Equals(""));
         }
 
+        private Student getCurrentStudent()
+        {
+            Student student;
+            if (dgwStudents.CurrentRow.Index < students.Count)
+            {
+                student = (Student)students[dgwStudents.CurrentRow.Index];
+            }
+            else
+            {
+                student = (Student)deductedStudents[dgwStudents.CurrentRow.Index - students.Count];
+            }
+
+            return student;
+        }
+
         private void dgwStudents_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (!(students is null))
             {
-                Student student = (Student)students[dgwStudents.CurrentRow.Index];
+                Student student = getCurrentStudent();
                 
                 student.Name = dgwStudents.CurrentRow.Cells[0].Value?.ToString();
                 student.Group = dgwStudents.CurrentRow.Cells[1].Value?.ToString();
@@ -189,18 +228,58 @@ namespace StudentsList
 
         private void btCreateRecord_Click(object sender, EventArgs e)
         {
-            dgwStudents.Rows.Add();
-            CurrentRowIndex = dgwStudents.Rows.Count - 1;
             students.Add(new Student());
+            LoadStudentsInGrid();
+            dgwStudents.CurrentCell = dgwStudents.Rows[students.Count-1].Cells[0];
         }
 
         private void btDeduct_Click(object sender, EventArgs e)
         {
-            ((Student) students[CurrentRowIndex]).IsDeducted = true;
-            deductedStudents.Add(students[CurrentRowIndex]);
-            students.RemoveAt(CurrentRowIndex);
-            dgwStudents.Rows.Remove(dgwStudents.Rows[CurrentRowIndex]);
+            Student student = getCurrentStudent();
+
+            if (student.IsDeducted == false) {
+                student.IsDeducted = true;
+                deductedStudents.Add(student);
+                students.RemoveAt(CurrentRowIndex);
+                outFileContainer.Save(ref students, ref deductedStudents);
+                LoadStudentsInGrid();
+            } else {
+                student.IsDeducted = false;
+                students.Add(student);
+                deductedStudents.RemoveAt(CurrentRowIndex - (students.Count - 1));
+                outFileContainer.Save(ref students, ref deductedStudents);
+                LoadStudentsInGrid();
+            }
+        }
+
+        private void cbShowDeducted_CheckedChanged(object sender, EventArgs e)
+        {
+            LoadStudentsInGrid();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             outFileContainer.Save(ref students, ref deductedStudents);
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            btInFileSelect_Click(sender, e);
+        }
+
+        private void miAddRecord_Click(object sender, EventArgs e)
+        {
+            btCreateRecord_Click(sender, e);
+        }
+
+        private void miDeduct_Click(object sender, EventArgs e)
+        {
+            btDeduct_Click(sender, e);
+        }
+
+        private void miClear_Click(object sender, EventArgs e)
+        {
+            btClear_Click(sender, e);
         }
 
         private void dgwStudents_SelectionChanged(object sender, EventArgs e)
@@ -210,12 +289,23 @@ namespace StudentsList
                 if (IsEmptyRow(dgwStudents.Rows[CurrentRowIndex]))
                 {
                     students.RemoveAt(CurrentRowIndex);
-                    dgwStudents.Rows.Remove(dgwStudents.Rows[CurrentRowIndex]);
+                    CurrentRowIndex -= 1;
+                    outFileContainer.Save(ref students, ref deductedStudents);
+                    LoadStudentsInGrid();
+                    if (CurrentRowIndex != -1)
+                    {
+                        dgwStudents.CurrentCell = dgwStudents.Rows[CurrentRowIndex].Cells[0];
+                    }
                 }
-
-                outFileContainer.Save(ref students, ref deductedStudents);
+                else
+                {
+                    outFileContainer.Save(ref students, ref deductedStudents);
+                }
+                
             }
-            CurrentRowIndex = dgwStudents.CurrentRow.Index;
+            CurrentRowIndex = dgwStudents.CurrentRow != null ? dgwStudents.CurrentRow.Index : -1;
+
+
         }
 
         private void saveFileDialogOut_FileOk(object sender, CancelEventArgs e)

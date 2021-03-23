@@ -43,15 +43,18 @@ namespace StudentsList
             }
             if (deductedStudents.Count > 0)
             {
-                array = System.Text.Encoding.Default.GetBytes(Environment.NewLine);
-                fstream.Write(array, 0, array.Length);
+                if (students.Count > 0)
+                {
+                    array = System.Text.Encoding.Default.GetBytes(Environment.NewLine);
+                    fstream.Write(array, 0, array.Length);
+                }
 
                 i = 0;
                 foreach (Student student in deductedStudents)
                 {
                     i++;
                     string text = student.Name + ',' + student.Group + ',' + student.Subject + ',' + student.Mark + ',' + student.IsDeducted.ToString();
-                    if (i < students.Count) { text += Environment.NewLine; }
+                    if (i < deductedStudents.Count) { text += Environment.NewLine; }
                     array = System.Text.Encoding.Default.GetBytes(text);
                     fstream.Write(array, 0, array.Length);
                     offset += array.Length;
