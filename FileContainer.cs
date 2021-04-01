@@ -20,14 +20,14 @@ namespace StudentsList
 
         public void Save(ref StudentsContainer students, ref StudentsContainer deductedStudents)
         {
-            saveTxt(ref students, ref deductedStudents);
-            //saveBin(students);
-            //saveDat(students);
+            save("txt", ref students, ref deductedStudents);
+            save("bin", ref students, ref deductedStudents);
+            save("dat", ref students, ref deductedStudents);
         }
 
-        private void saveTxt(ref StudentsContainer students, ref StudentsContainer deductedStudents)
+        private void save(string ext, ref StudentsContainer students, ref StudentsContainer deductedStudents)
         {
-            FileStream fstream = new FileStream($"{path}.txt", FileMode.Create);
+            FileStream fstream = new FileStream($"{path}.{ext}", FileMode.Create);
             byte[] array;
             int offset = 0;
             int len = students.Count;
@@ -69,7 +69,7 @@ namespace StudentsList
             try
             {
                 FileStream fstream = new FileStream($"{path}.txt", FileMode.Open);
-                loadTxt(fstream, ref students, ref deductedStudents);
+                load(fstream, ref students, ref deductedStudents);
                 fstream.Close();
                 return;
             }
@@ -78,7 +78,7 @@ namespace StudentsList
             try
             {
                 FileStream fstream = new FileStream($"{path}.dat", FileMode.Open);
-                loadDat(fstream);
+                load(fstream, ref students, ref deductedStudents);
                 fstream.Close();
                 return;
             }
@@ -87,7 +87,7 @@ namespace StudentsList
             try
             {
                 FileStream fstream = new FileStream($"{path}.bin", FileMode.Open);
-                loadBin(fstream);
+                load(fstream, ref students, ref deductedStudents);
                 fstream.Close();
                 return;
             }
@@ -96,7 +96,7 @@ namespace StudentsList
             }
         }
 
-        private void loadTxt(FileStream fstream, ref StudentsContainer students, ref StudentsContainer deductedStudents)
+        private void load(FileStream fstream, ref StudentsContainer students, ref StudentsContainer deductedStudents)
         {
             // преобразуем строку в байты
             byte[] array = new byte[fstream.Length];
@@ -118,16 +118,6 @@ namespace StudentsList
                     students.Add(student);
                 }
             }
-        }
-
-        private void loadDat(FileStream fstream)
-        {
-
-        }
-
-        private void loadBin(FileStream fstream)
-        {
-
         }
     }
 }

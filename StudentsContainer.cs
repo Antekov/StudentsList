@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StudentsList
 {
-    class StudentsContainer : ArrayList
+    public class StudentsContainer : ArrayList
     {
         public void Save(string FileName)
         {

@@ -35,6 +35,9 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.miAddRecord = new System.Windows.Forms.ToolStripMenuItem();
+            this.miDeduct = new System.Windows.Forms.ToolStripMenuItem();
+            this.miClear = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDeletedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,6 +54,11 @@
             this.cbEnableDuplicateName = new System.Windows.Forms.CheckBox();
             this.cbShowDeducted = new System.Windows.Forms.CheckBox();
             this.dgwStudents = new System.Windows.Forms.DataGridView();
+            this.FullName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Group = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Mark = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IsDeducted = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btClear = new System.Windows.Forms.Button();
             this.btFirstRecord = new System.Windows.Forms.Button();
             this.btPrevRecord = new System.Windows.Forms.Button();
@@ -58,15 +66,9 @@
             this.btLastRecord = new System.Windows.Forms.Button();
             this.btCreateRecord = new System.Windows.Forms.Button();
             this.btDeduct = new System.Windows.Forms.Button();
-            this.FullName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Group = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Mark = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IsDeducted = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.studentBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.miAddRecord = new System.Windows.Forms.ToolStripMenuItem();
-            this.miDeduct = new System.Windows.Forms.ToolStripMenuItem();
-            this.miClear = new System.Windows.Forms.ToolStripMenuItem();
+            this.btShowDeducted = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgwStudents)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.studentBindingSource)).BeginInit();
@@ -129,6 +131,27 @@
             this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.editToolStripMenuItem.Text = "Edit";
             // 
+            // miAddRecord
+            // 
+            this.miAddRecord.Name = "miAddRecord";
+            this.miAddRecord.Size = new System.Drawing.Size(272, 26);
+            this.miAddRecord.Text = "Добавить";
+            this.miAddRecord.Click += new System.EventHandler(this.miAddRecord_Click);
+            // 
+            // miDeduct
+            // 
+            this.miDeduct.Name = "miDeduct";
+            this.miDeduct.Size = new System.Drawing.Size(272, 26);
+            this.miDeduct.Text = "Отчислить / восстановить";
+            this.miDeduct.Click += new System.EventHandler(this.miDeduct_Click);
+            // 
+            // miClear
+            // 
+            this.miClear.Name = "miClear";
+            this.miClear.Size = new System.Drawing.Size(272, 26);
+            this.miClear.Text = "Очистить";
+            this.miClear.Click += new System.EventHandler(this.miClear_Click);
+            // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -149,6 +172,7 @@
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
             this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -181,7 +205,7 @@
             // 
             // tbOutFileName
             // 
-            this.tbOutFileName.Location = new System.Drawing.Point(60, 81);
+            this.tbOutFileName.Location = new System.Drawing.Point(60, 86);
             this.tbOutFileName.Margin = new System.Windows.Forms.Padding(4);
             this.tbOutFileName.Name = "tbOutFileName";
             this.tbOutFileName.Size = new System.Drawing.Size(288, 22);
@@ -201,7 +225,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 86);
+            this.label2.Location = new System.Drawing.Point(13, 91);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(31, 17);
@@ -278,6 +302,42 @@
             this.dgwStudents.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgwStudents_CellValueChanged);
             this.dgwStudents.SelectionChanged += new System.EventHandler(this.dgwStudents_SelectionChanged);
             // 
+            // FullName
+            // 
+            this.FullName.HeaderText = "ФИО";
+            this.FullName.MinimumWidth = 125;
+            this.FullName.Name = "FullName";
+            this.FullName.Width = 275;
+            // 
+            // Group
+            // 
+            this.Group.HeaderText = "Группа";
+            this.Group.MinimumWidth = 50;
+            this.Group.Name = "Group";
+            this.Group.Width = 125;
+            // 
+            // Subject
+            // 
+            this.Subject.HeaderText = "Предмет";
+            this.Subject.MinimumWidth = 50;
+            this.Subject.Name = "Subject";
+            this.Subject.Width = 125;
+            // 
+            // Mark
+            // 
+            this.Mark.HeaderText = "Оценка";
+            this.Mark.MinimumWidth = 25;
+            this.Mark.Name = "Mark";
+            this.Mark.Width = 75;
+            // 
+            // IsDeducted
+            // 
+            this.IsDeducted.HeaderText = "Отчислен";
+            this.IsDeducted.MinimumWidth = 50;
+            this.IsDeducted.Name = "IsDeducted";
+            this.IsDeducted.ReadOnly = true;
+            this.IsDeducted.Width = 75;
+            // 
             // btClear
             // 
             this.btClear.Location = new System.Drawing.Point(869, 480);
@@ -340,78 +400,34 @@
             // 
             // btDeduct
             // 
-            this.btDeduct.Location = new System.Drawing.Point(756, 436);
+            this.btDeduct.Location = new System.Drawing.Point(827, 436);
             this.btDeduct.Name = "btDeduct";
-            this.btDeduct.Size = new System.Drawing.Size(196, 35);
+            this.btDeduct.Size = new System.Drawing.Size(125, 35);
             this.btDeduct.TabIndex = 18;
-            this.btDeduct.Text = "Отчислить/Восстановить";
+            this.btDeduct.Text = "Отчислить";
             this.btDeduct.UseVisualStyleBackColor = true;
             this.btDeduct.Click += new System.EventHandler(this.btDeduct_Click);
-            // 
-            // FullName
-            // 
-            this.FullName.HeaderText = "ФИО";
-            this.FullName.MinimumWidth = 125;
-            this.FullName.Name = "FullName";
-            this.FullName.Width = 275;
-            // 
-            // Group
-            // 
-            this.Group.HeaderText = "Группа";
-            this.Group.MinimumWidth = 50;
-            this.Group.Name = "Group";
-            // 
-            // Subject
-            // 
-            this.Subject.HeaderText = "Предмет";
-            this.Subject.MinimumWidth = 50;
-            this.Subject.Name = "Subject";
-            // 
-            // Mark
-            // 
-            this.Mark.HeaderText = "Оценка";
-            this.Mark.MinimumWidth = 25;
-            this.Mark.Name = "Mark";
-            this.Mark.Width = 75;
-            // 
-            // IsDeducted
-            // 
-            this.IsDeducted.HeaderText = "Отчислен";
-            this.IsDeducted.MinimumWidth = 50;
-            this.IsDeducted.Name = "IsDeducted";
-            this.IsDeducted.ReadOnly = true;
-            this.IsDeducted.Width = 75;
             // 
             // studentBindingSource
             // 
             this.studentBindingSource.DataSource = typeof(StudentsList.Student);
             // 
-            // miAddRecord
+            // btShowDeducted
             // 
-            this.miAddRecord.Name = "miAddRecord";
-            this.miAddRecord.Size = new System.Drawing.Size(272, 26);
-            this.miAddRecord.Text = "Добавить";
-            this.miAddRecord.Click += new System.EventHandler(this.miAddRecord_Click);
-            // 
-            // miDeduct
-            // 
-            this.miDeduct.Name = "miDeduct";
-            this.miDeduct.Size = new System.Drawing.Size(272, 26);
-            this.miDeduct.Text = "Отчислить / восстановить";
-            this.miDeduct.Click += new System.EventHandler(this.miDeduct_Click);
-            // 
-            // miClear
-            // 
-            this.miClear.Name = "miClear";
-            this.miClear.Size = new System.Drawing.Size(272, 26);
-            this.miClear.Text = "Очистить";
-            this.miClear.Click += new System.EventHandler(this.miClear_Click);
+            this.btShowDeducted.Location = new System.Drawing.Point(493, 54);
+            this.btShowDeducted.Name = "btShowDeducted";
+            this.btShowDeducted.Size = new System.Drawing.Size(202, 29);
+            this.btShowDeducted.TabIndex = 19;
+            this.btShowDeducted.Text = "Показать отчисленных";
+            this.btShowDeducted.UseVisualStyleBackColor = true;
+            this.btShowDeducted.Click += new System.EventHandler(this.btShowDeducted_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(967, 551);
+            this.Controls.Add(this.btShowDeducted);
             this.Controls.Add(this.btDeduct);
             this.Controls.Add(this.btCreateRecord);
             this.Controls.Add(this.btLastRecord);
@@ -485,6 +501,8 @@
         private System.Windows.Forms.ToolStripMenuItem miAddRecord;
         private System.Windows.Forms.ToolStripMenuItem miDeduct;
         private System.Windows.Forms.ToolStripMenuItem miClear;
+        private System.Windows.Forms.Button btShowDeducted;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 
